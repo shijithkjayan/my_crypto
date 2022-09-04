@@ -9,5 +9,6 @@ defmodule MyCryptoWeb.Router do
     pipe_through :api
 
     get "/messenger", MessengerController, :validate
+    post "/messenger", MessengerController, :recieve_message
   end
 end
