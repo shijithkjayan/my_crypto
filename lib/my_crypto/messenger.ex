@@ -45,6 +45,16 @@ defmodule MyCrypto.Messenger do
     |> HttpClient.send_reply()
   end
 
+  defp handle_message(
+         %{"message" => %{"quick_reply" => %{"payload" => "price_of_" <> coin_id}}} = message
+       ) do
+    sender_id = Helpers.get_sender_id(message)
+
+    coin_id
+    |> get_market_chart(sender_id)
+    |> HttpClient.send_reply()
+  end
+
   defp handle_message(%{"postback" => %{"payload" => "search_by_" <> type}} = message) do
     sender_id = Helpers.get_sender_id(message)
 
@@ -54,8 +64,12 @@ defmodule MyCrypto.Messenger do
   end
 
   defp handle_message(message) do
-    IO.inspect(message)
-    :error
+    sender_id = Helpers.get_sender_id(message)
+
+    sender_id
+    |> HttpClient.get_user_name()
+    |> PayloadGenerator.unknown_message_response(sender_id)
+    |> HttpClient.send_reply()
   end
 
   defp get_coins(sender_id, search_by: search_type) do
@@ -67,6 +81,13 @@ defmodule MyCrypto.Messenger do
       coins ->
         PayloadGenerator.get_coins_success_response(coins, search_type, sender_id)
     end
+    |> HttpClient.send_reply()
+  end
+
+  defp get_market_chart(coin_id, sender_id) do
+    coin_id
+    |> CoinGecko.get_prices()
+    |> PayloadGenerator.prices_response(sender_id)
     |> HttpClient.send_reply()
   end
 end
