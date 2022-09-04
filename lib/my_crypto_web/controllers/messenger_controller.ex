@@ -16,25 +16,14 @@ defmodule MyCryptoWeb.MessengerController do
         |> send_resp
 
       false ->
-        handle_error(conn)
+        render(conn, "error.json")
     end
   end
 
-  def validate(conn, _), do: handle_error(conn)
+  def validate(conn, _), do: render(conn, "error.json")
 
   def recieve_message(conn, params) do
     Messenger.read_message(params)
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> resp(200, Jason.encode!(%{status: :ok}))
-    |> send_resp
-  end
-
-  defp handle_error(conn) do
-    conn
-    |> put_resp_content_type("application/json")
-    |> resp(422, Jason.encode!(%{status: "error", message: "invalid payload"}))
-    |> send_resp
+    render(conn, "success.json")
   end
 end
