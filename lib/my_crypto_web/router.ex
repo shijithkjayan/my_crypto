@@ -7,5 +7,7 @@ defmodule MyCryptoWeb.Router do
 
   scope "/api", MyCryptoWeb do
     pipe_through :api
+
+    get "/messenger", MessengerController, :validate
   end
 end
