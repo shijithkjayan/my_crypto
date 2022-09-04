@@ -2,6 +2,8 @@ defmodule MyCrypto.CoinGecko.HttpClient do
   use Tesla
   require Logger
 
+  @behaviour MyCrypto.CoinGecko.Http
+
   @base_url System.get_env("COINGECKO_URL")
   @vs_currency "usd"
   @days 14

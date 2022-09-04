@@ -16,11 +16,17 @@ defmodule MyCryptoWeb.MessengerController do
         |> send_resp
 
       false ->
-        render(conn, "error.json")
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render("error.json")
     end
   end
 
-  def validate(conn, _), do: render(conn, "error.json")
+  def validate(conn, _) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> render("error.json")
+  end
 
   def recieve_message(conn, params) do
     Messenger.read_message(params)

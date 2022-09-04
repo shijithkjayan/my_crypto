@@ -9,6 +9,7 @@ defmodule MyCrypto.Messenger do
   alias MyCrypto.Messenger.PayloadGenerator
 
   @token System.get_env("MESSENGER_VERIFY_TOKEN")
+  @http_client Application.compile_env(:my_crypto, [__MODULE__, :http_client], HttpClient)
 
   @doc """
   Validate the recieved token is same as what we have in the
@@ -40,9 +41,9 @@ defmodule MyCrypto.Messenger do
     sender_id = Helpers.get_sender_id(message)
 
     sender_id
-    |> HttpClient.get_user_name()
+    |> @http_client.get_user_name()
     |> PayloadGenerator.initial_message_response(sender_id)
-    |> HttpClient.send_reply()
+    |> @http_client.send_reply()
   end
 
   defp handle_message(
@@ -52,7 +53,7 @@ defmodule MyCrypto.Messenger do
 
     coin_id
     |> get_market_chart(sender_id)
-    |> HttpClient.send_reply()
+    |> @http_client.send_reply()
   end
 
   defp handle_message(%{"postback" => %{"payload" => "search_by_" <> type}} = message) do
@@ -60,16 +61,16 @@ defmodule MyCrypto.Messenger do
 
     sender_id
     |> get_coins(search_by: type)
-    |> HttpClient.send_reply()
+    |> @http_client.send_reply()
   end
 
   defp handle_message(message) do
     sender_id = Helpers.get_sender_id(message)
 
     sender_id
-    |> HttpClient.get_user_name()
+    |> @http_client.get_user_name()
     |> PayloadGenerator.unknown_message_response(sender_id)
-    |> HttpClient.send_reply()
+    |> @http_client.send_reply()
   end
 
   defp get_coins(sender_id, search_by: search_type) do
@@ -81,13 +82,13 @@ defmodule MyCrypto.Messenger do
       coins ->
         PayloadGenerator.get_coins_success_response(coins, search_type, sender_id)
     end
-    |> HttpClient.send_reply()
+    |> @http_client.send_reply()
   end
 
   defp get_market_chart(coin_id, sender_id) do
     coin_id
     |> CoinGecko.get_prices()
     |> PayloadGenerator.prices_response(sender_id)
-    |> HttpClient.send_reply()
+    |> @http_client.send_reply()
   end
 end

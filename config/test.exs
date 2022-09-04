@@ -7,6 +7,9 @@ config :my_crypto, MyCryptoWeb.Endpoint,
   secret_key_base: "jYsJW7fUsY37+p+QbxhJuvuroYbxQgurehf00IHZxRJWa4wbVkDu4Vb2nc/y1pmX",
   server: false
 
+config :my_crypto, MyCrypto.CoinGecko, http_client: MyCrypto.CoinGecko.HttpClientMock
+config :my_crypto, MyCrypto.Messenger, http_client: MyCrypto.Messenger.HttpClientMock
+
 # Print only warnings and errors during test
 config :logger, level: :warn
 

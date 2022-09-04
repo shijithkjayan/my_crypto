@@ -2,6 +2,8 @@ defmodule MyCrypto.Messenger.HttpClient do
   use Tesla
   require Logger
 
+  @behaviour MyCrypto.Messenger.Http
+
   @base_url System.get_env("MESSENGER_URL")
   @access_token System.get_env("FB_PAGE_ACCESS_TOKEN")
 

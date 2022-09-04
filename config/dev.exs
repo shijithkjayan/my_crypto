@@ -16,6 +16,9 @@ config :my_crypto, MyCryptoWeb.Endpoint,
   secret_key_base: "pdKxZDp55WZlf1wNX2bopofOoxxzoOX3NihdP1LK3ls1mPkeTI/VzQq0IqPRsWAQ",
   watchers: []
 
+config :my_crypto, MyCrypto.CoinGecko, http_client: MyCrypto.CoinGecko.HttpClient
+config :my_crypto, MyCrypto.Messenger, http_client: MyCrypto.Messenger.HttpClient
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
