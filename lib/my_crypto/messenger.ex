@@ -3,8 +3,10 @@ defmodule MyCrypto.Messenger do
   The Messenger context module.
   """
 
+  alias MyCrypto.CoinGecko
   alias MyCrypto.Messenger.Helpers
   alias MyCrypto.Messenger.HttpClient
+  alias MyCrypto.Messenger.PayloadGenerator
 
   @token System.get_env("MESSENGER_VERIFY_TOKEN")
 
@@ -34,31 +36,20 @@ defmodule MyCrypto.Messenger do
     handle_message(message)
   end
 
-  defp handle_message(%{"message" => %{"text" => text}} = message)
-       when text in ["hi", "Hi", "HI", "Hello", "hello", "HELLO"] do
+  defp handle_message(%{"message" => %{"text" => text}} = message) when text in ["Hi", "Hello"] do
     sender_id = Helpers.get_sender_id(message)
-    user_name = HttpClient.get_user_name(sender_id)
 
-    message = "Hi #{user_name}! Welcome to MyCrypto. How would you like to search for coins?"
+    sender_id
+    |> HttpClient.get_user_name()
+    |> PayloadGenerator.initial_message_response(sender_id)
+    |> HttpClient.send_reply()
+  end
 
-    message_body = %{
-      text: message,
-      quick_replies: [
-        %{
-          content_type: "text",
-          title: "Search by coin name",
-          payload: "search_by_name"
-        },
-        %{
-          content_type: "text",
-          title: "Search by coin ID",
-          payload: "search_by_id"
-        }
-      ]
-    }
+  defp handle_message(%{"postback" => %{"payload" => "search_by_" <> type}} = message) do
+    sender_id = Helpers.get_sender_id(message)
 
-    message_body
-    |> message_response(sender_id)
+    sender_id
+    |> get_coins(search_by: type)
     |> HttpClient.send_reply()
   end
 
@@ -67,13 +58,15 @@ defmodule MyCrypto.Messenger do
     :error
   end
 
-  defp message_response(message_body, recipient_id) do
-    %{
-      recipient: %{
-        id: recipient_id
-      },
-      messaging_type: "RESPONSE",
-      message: message_body
-    }
+  defp get_coins(sender_id, search_by: search_type) do
+    CoinGecko.list_coins()
+    |> case do
+      [] ->
+        PayloadGenerator.get_coins_fail_response(sender_id)
+
+      coins ->
+        PayloadGenerator.get_coins_success_response(coins, search_type, sender_id)
+    end
+    |> HttpClient.send_reply()
   end
 end
