@@ -87,10 +87,5 @@ jobs:
             _build
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
       - name: Run tests
-        run: mix coveralls.json
-      - name: Upload to Codecov
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov
+        run: mix coveralls
 
