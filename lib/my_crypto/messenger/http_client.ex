@@ -14,21 +14,21 @@ defmodule MyCrypto.Messenger.HttpClient do
 
   def send_reply(body) do
     case post("/me/messages", body, query: [access_token: @access_token]) do
-      {:ok, _} ->
+      {:ok, %Tesla.Env{status: 200}} ->
         Logger.info("Message send succesfully")
-
-      {:error, error} ->
+      error ->
         Logger.error("Failed to send message", error: error)
     end
   end
 
   def get_user_name(sender_id) do
     case get("/#{sender_id}", query: [access_token: @access_token]) do
-      {:ok, %Tesla.Env{body: profile}} ->
+      {:ok, %Tesla.Env{body: profile, status: 200}} ->
         Helpers.get_name_from_profile(profile)
 
-      {:error, _error} ->
+      error ->
         # Returning "there" in case of error so that the message reads: "Hi there.!"
+        Logger.error("Failed to get username", error: error)
         "there"
     end
   end

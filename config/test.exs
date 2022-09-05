@@ -10,6 +10,8 @@ config :my_crypto, MyCryptoWeb.Endpoint,
 config :my_crypto, MyCrypto.CoinGecko, http_client: MyCrypto.CoinGecko.HttpClientMock
 config :my_crypto, MyCrypto.Messenger, http_client: MyCrypto.Messenger.HttpClientMock
 
+config :tesla, adapter: Tesla.Mock
+
 # Print only warnings and errors during test
 config :logger, level: :warn
 

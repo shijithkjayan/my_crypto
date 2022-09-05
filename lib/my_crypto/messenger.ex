@@ -52,7 +52,8 @@ defmodule MyCrypto.Messenger do
     sender_id = Helpers.get_sender_id(message)
 
     coin_id
-    |> get_market_chart(sender_id)
+    |> CoinGecko.get_prices()
+    |> PayloadGenerator.prices_response(sender_id)
     |> @http_client.send_reply()
   end
 
@@ -60,7 +61,7 @@ defmodule MyCrypto.Messenger do
     sender_id = Helpers.get_sender_id(message)
 
     sender_id
-    |> get_coins(search_by: type)
+    |> get_coins_payload(search_by: type)
     |> @http_client.send_reply()
   end
 
@@ -73,7 +74,7 @@ defmodule MyCrypto.Messenger do
     |> @http_client.send_reply()
   end
 
-  defp get_coins(sender_id, search_by: search_type) do
+  defp get_coins_payload(sender_id, search_by: search_type) do
     CoinGecko.list_coins()
     |> case do
       [] ->
@@ -82,13 +83,5 @@ defmodule MyCrypto.Messenger do
       coins ->
         PayloadGenerator.get_coins_success_response(coins, search_type, sender_id)
     end
-    |> @http_client.send_reply()
-  end
-
-  defp get_market_chart(coin_id, sender_id) do
-    coin_id
-    |> CoinGecko.get_prices()
-    |> PayloadGenerator.prices_response(sender_id)
-    |> @http_client.send_reply()
   end
 end

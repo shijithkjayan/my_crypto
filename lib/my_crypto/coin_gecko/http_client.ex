@@ -34,6 +34,10 @@ defmodule MyCrypto.CoinGecko.HttpClient do
       {:ok, %Tesla.Env{body: body, status: 200}} ->
         body
 
+      {:ok, %Tesla.Env{body: body}} ->
+        Logger.error("Coingecko coins/:id/markert_chart API returned error", error: body)
+        :error
+
       {:error, error} ->
         Logger.error("Coingecko coins/:id/markert_chart API failed", error: error)
         :error

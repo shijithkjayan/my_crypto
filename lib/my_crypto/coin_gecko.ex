@@ -20,7 +20,7 @@ defmodule MyCrypto.CoinGecko do
     case @http_client.get_market_chart(coin_id) do
       %{"prices" => prices} ->
         Enum.map(prices, fn [unix_time, price] ->
-          date = DateTime.from_unix!(unix_time, :millisecond) |> DateTime.to_date()
+          date = unix_time |> DateTime.from_unix!(:millisecond) |> DateTime.to_date()
           "#{date}: #{price} \n\n"
         end)
 
