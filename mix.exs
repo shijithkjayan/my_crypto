@@ -47,7 +47,8 @@ defmodule MyCrypto.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:tesla, "~> 1.4"},
       {:mox, "~> 1.0", only: :test},
-      {:excoveralls, "~> 0.14.6", only: :test}
+      {:excoveralls, "~> 0.14.6", only: :test},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 

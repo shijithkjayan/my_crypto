@@ -1,4 +1,7 @@
 defmodule MyCrypto.CoinGecko.HttpClient do
+  @moduledoc """
+  HTTP Client for Coin Gecko API calls
+  """
   use Tesla
   require Logger
 

@@ -1,4 +1,7 @@
 defmodule MyCrypto.Messenger.HttpClient do
+  @moduledoc """
+  HTTP Client for Graph API calls
+  """
   use Tesla
   require Logger
 
