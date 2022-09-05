@@ -35,7 +35,8 @@
           ~r"/_build/",
           ~r"/deps/",
           ~r"/node_modules/",
-          ~r"/lib/my_crypto_web/telemetry.ex"
+          ~r"/lib/my_crypto_web/telemetry.ex",
+          ~r"/lib/my_crypto/messenger.ex"
         ]
       },
       #
