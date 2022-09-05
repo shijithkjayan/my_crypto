@@ -28,7 +28,10 @@ defmodule MyCryptoWeb.MessengerControllerTest do
   end
 
   describe "GET validate/2" do
-    test "returns the hub.challenge value with valid params", %{conn: conn, verify_token: verify_token} do
+    test "returns the hub.challenge value with valid params", %{
+      conn: conn,
+      verify_token: verify_token
+    } do
       conn =
         get(
           conn,
