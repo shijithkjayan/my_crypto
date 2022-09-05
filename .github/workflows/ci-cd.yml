@@ -69,10 +69,10 @@ jobs:
         elixir: ['1.13.4']
         otp: ['25.0']
     env:
-          FB_PAGE_ACCESS_TOKEN: "fb-page-access-token"
-          MESSENGER_VERIFY_TOKEN: "messenger-verify-token"
-          MESSENGER_URL: "https://example.test.com"
-          COINGECKO_URL: "https://api.test.com/api/v3"
+      FB_PAGE_ACCESS_TOKEN: "fb-page-access-token"
+      MESSENGER_VERIFY_TOKEN: "messenger-verify-token"
+      MESSENGER_URL: "https://example.test.com"
+      COINGECKO_URL: "https://api.test.com/api/v3"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Elixir
@@ -94,6 +94,11 @@ jobs:
     needs: [credo-checks, test]
     name: Prod Deploy
     runs-on: ubuntu-latest
+    env:
+      FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+      MESSENGER_VERIFY_TOKEN: ${{ secrets.MESSENGER_VERIFY_TOKEN }}
+      MESSENGER_URL: ${{ secrets.MESSENGER_URL }}
+      COINGECKO_URL: ${{ secrets.COINGECKO_URL }}
     steps:
         - uses: actions/checkout@v3
         - uses: superfly/flyctl-actions/setup-flyctl@master

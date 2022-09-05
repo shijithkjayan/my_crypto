@@ -8,7 +8,7 @@ defmodule MyCrypto.Messenger do
   alias MyCrypto.Messenger.HttpClient
   alias MyCrypto.Messenger.PayloadGenerator
 
-  @token System.get_env("MESSENGER_VERIFY_TOKEN") |> IO.inspect(label: "TOKEN_VALUE")
+  @token System.get_env("MESSENGER_VERIFY_TOKEN")
   @http_client Application.compile_env(:my_crypto, [__MODULE__, :http_client], HttpClient)
 
   @doc """
