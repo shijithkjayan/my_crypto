@@ -26,8 +26,8 @@ defmodule MyCrypto.Messenger do
   """
   @spec validate_verify_token(String.t()) :: boolean()
   def validate_verify_token(token) do
-    IO.inspect token, label: "INCOMING"
-    IO.inspect @token, label: "EXISTING"
+    IO.inspect(token, label: "INCOMING")
+    IO.inspect(@token, label: "EXISTING")
     token == @token
   end
 
