@@ -8,7 +8,6 @@ defmodule MyCrypto.Messenger do
   alias MyCrypto.Messenger.HttpClient
   alias MyCrypto.Messenger.PayloadGenerator
 
-  @token System.get_env("MESSENGER_VERIFY_TOKEN")
   @http_client Application.compile_env(:my_crypto, [__MODULE__, :http_client], HttpClient)
 
   @doc """
@@ -26,12 +25,8 @@ defmodule MyCrypto.Messenger do
   """
   @spec validate_verify_token(String.t()) :: boolean()
   def validate_verify_token(token) do
-    IO.inspect(token, label: "INCOMING")
-    IO.inspect(@token, label: "EXISTING")
-    token == @token
+    System.get_env("MESSENGER_VERIFY_TOKEN") == token
   end
-
-  # def validate_verify_token(_), do: false
 
   @doc """
   Reads the message and sends reply accordingly.

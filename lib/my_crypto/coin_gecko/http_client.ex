@@ -7,12 +7,11 @@ defmodule MyCrypto.CoinGecko.HttpClient do
 
   @behaviour MyCrypto.CoinGecko.Http
 
-  @base_url System.get_env("COINGECKO_URL")
   @vs_currency "usd"
   @days 14
   @interval "daily"
 
-  plug Tesla.Middleware.BaseUrl, @base_url
+  plug Tesla.Middleware.BaseUrl, System.get_env("COINGECKO_URL")
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.PathParams
 

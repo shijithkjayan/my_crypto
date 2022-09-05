@@ -6,8 +6,6 @@ defmodule MyCryptoWeb.MessengerControllerTest do
 
   alias MyCrypto.Messenger.HttpClientMock, as: MessengerClientMock
 
-  @verify_token System.get_env("MESSENGER_VERIFY_TOKEN")
-
   @sender_id "1234567890"
 
   @valid_message %{
@@ -25,15 +23,19 @@ defmodule MyCryptoWeb.MessengerControllerTest do
 
   @invalid_message %{"entry" => %{"invalid" => "should fail"}}
 
+  setup do
+    {:ok, %{verify_token: System.get_env("MESSENGER_VERIFY_TOKEN")}}
+  end
+
   describe "GET validate/2" do
-    test "returns the hub.challenge value with valid params", %{conn: conn} do
+    test "returns the hub.challenge value with valid params", %{conn: conn, verify_token: verify_token} do
       conn =
         get(
           conn,
           Routes.messenger_path(conn, :validate,
             "hub.mode": "subscribe",
             "hub.challenge": 1234,
-            "hub.verify_token": @verify_token
+            "hub.verify_token": verify_token
           )
         )
 
@@ -54,14 +56,14 @@ defmodule MyCryptoWeb.MessengerControllerTest do
       assert %{"status" => "error", "message" => "invalid payload"} = json_response(conn, 422)
     end
 
-    test "returns error with invalid hub.mode value", %{conn: conn} do
+    test "returns error with invalid hub.mode value", %{conn: conn, verify_token: verify_token} do
       conn =
         get(
           conn,
           Routes.messenger_path(conn, :validate,
             "hub.mode": "invalid",
             "hub.challenge": 1234,
-            "hub.verify_token": @verify_token
+            "hub.verify_token": verify_token
           )
         )
 
