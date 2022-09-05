@@ -1,0 +1,8 @@
+# fly.toml file generated for my-crypto on 2022-09-06T01:00:06+05:30
+
+app = "my-crypto"
+kill_signal = "SIGTERM"
+
+[env]
+  PHX_HOST = "my-crypto.fly.dev"
+  PORT = "8080"
