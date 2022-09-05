@@ -39,8 +39,8 @@ defmodule MyCrypto.Messenger.HttpClientTest do
       Logger.configure(level: :debug)
 
       assert capture_log(fn ->
-        assert :ok = HttpClient.send_reply(@message)
-      end) =~ "Message send succesfully"
+               assert :ok = HttpClient.send_reply(@message)
+             end) =~ "Message send succesfully"
 
       # Reverting log level to avoid cluttering the test report with logs
       Logger.configure(level: :warn)

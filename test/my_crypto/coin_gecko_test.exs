@@ -28,14 +28,15 @@ defmodule MyCrypto.CoinGeckoTest do
         }
       end)
 
-      assert ["#{date1}: #{price1} \n\n", "#{date2}: #{price2} \n\n"] == CoinGecko.get_prices(coin_id)
+      assert ["#{date1}: #{price1} \n\n", "#{date2}: #{price2} \n\n"] ==
+               CoinGecko.get_prices(coin_id)
     end
 
     test "returns :error with invalid coin ID" do
       coin_id = "btcoin"
 
       expect(HttpClientMock, :get_market_chart, fn ^coin_id ->
-       :error
+        :error
       end)
 
       assert :error = CoinGecko.get_prices(coin_id)
@@ -45,7 +46,7 @@ defmodule MyCrypto.CoinGeckoTest do
       coin_id = "bitcoin"
 
       expect(HttpClientMock, :get_market_chart, fn ^coin_id ->
-       :error
+        :error
       end)
 
       assert :error = CoinGecko.get_prices(coin_id)

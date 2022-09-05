@@ -1,7 +1,6 @@
 defmodule MyCrypto.MessengerTest do
   use ExUnit.Case
 
-
   import Mox
   setup :verify_on_exit!
 

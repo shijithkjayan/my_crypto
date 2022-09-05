@@ -16,6 +16,7 @@ defmodule MyCrypto.Messenger.HttpClient do
     case post("/me/messages", body, query: [access_token: @access_token]) do
       {:ok, %Tesla.Env{status: 200}} ->
         Logger.info("Message send succesfully")
+
       error ->
         Logger.error("Failed to send message", error: error)
     end
