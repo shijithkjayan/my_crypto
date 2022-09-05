@@ -69,7 +69,7 @@ jobs:
     env:
           FB_PAGE_ACCESS_TOKEN: "fb-page-access-token"
           MESSENGER_VERIFY_TOKEN: "messenger-verify-token"
-          MESSENGER_URL: "https://example.test.com/"
+          MESSENGER_URL: "https://example.test.com"
           COINGECKO_URL: "https://api.test.com/api/v3"
     steps:
       - uses: actions/checkout@v3
