@@ -31,7 +31,12 @@
           "apps/*/test/",
           "apps/*/web/"
         ],
-        excluded: [~r"/_build/", ~r"/deps/", ~r"/node_modules/", ~r"/lib/my_crypto_web/telemetry.ex"]
+        excluded: [
+          ~r"/_build/",
+          ~r"/deps/",
+          ~r"/node_modules/",
+          ~r"/lib/my_crypto_web/telemetry.ex"
+        ]
       },
       #
       # Load and configure plugins here:
