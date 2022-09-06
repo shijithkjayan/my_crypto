@@ -31,13 +31,21 @@ defmodule MyCrypto.Messenger.PayloadGenerator do
     message_response(message_body, recipient_id)
   end
 
-  def get_coins_fail_response(recipient_id) do
+  def search_results(:error, recipient_id) do
     message = "We are unable to fetch the coins now, please try again later."
     message_response(%{text: message}, recipient_id)
   end
 
-  def get_coins_success_response(coins, search_type, recipient_id) do
-    quick_replies = Enum.map(coins, &generate_quick_reply_template(&1, search_type))
+  def search_results([], recipient_id) do
+    message_body = %{
+      text: "No coins found.! Please try another keyword"
+    }
+
+    message_response(message_body, recipient_id)
+  end
+
+  def search_results(coins, recipient_id) do
+    quick_replies = Enum.map(coins, &generate_quick_reply_template(&1))
 
     message_body = %{
       text: "Select a coin",
@@ -47,10 +55,10 @@ defmodule MyCrypto.Messenger.PayloadGenerator do
     message_response(message_body, recipient_id)
   end
 
-  defp generate_quick_reply_template(%{"id" => id} = coin, search_type) do
+  defp generate_quick_reply_template(%{"id" => id, "name" => name}) do
     %{
       content_type: "text",
-      title: coin[search_type],
+      title: name,
       payload: "price_of_#{id}"
     }
   end
@@ -65,6 +73,14 @@ defmodule MyCrypto.Messenger.PayloadGenerator do
     The price of requested coin over the last 14 days is:
 
     #{prices}
+    """
+
+    message_response(%{text: message}, recipient_id)
+  end
+
+  def search_by_response(type, recipient_id) do
+    message = """
+    Enter the coin #{type} keyword to search
     """
 
     message_response(%{text: message}, recipient_id)

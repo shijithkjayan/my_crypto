@@ -59,8 +59,15 @@ defmodule MyCrypto.Messenger do
   defp handle_message(%{"postback" => %{"payload" => "search_by_" <> type}} = message) do
     sender_id = Helpers.get_sender_id(message)
 
-    sender_id
-    |> get_coins_payload(search_by: type)
+    type
+    |> PayloadGenerator.search_by_response(sender_id)
+    |> @http_client.send_reply()
+  end
+
+  defp handle_message(%{"message" => %{"text" => text}} = message) do
+    message
+    |> Helpers.get_sender_id()
+    |> get_coins_payload(text)
     |> @http_client.send_reply()
   end
 
@@ -73,14 +80,9 @@ defmodule MyCrypto.Messenger do
     |> @http_client.send_reply()
   end
 
-  defp get_coins_payload(sender_id, search_by: search_type) do
-    CoinGecko.list_coins()
-    |> case do
-      [] ->
-        PayloadGenerator.get_coins_fail_response(sender_id)
-
-      coins ->
-        PayloadGenerator.get_coins_success_response(coins, search_type, sender_id)
-    end
+  defp get_coins_payload(sender_id, keyword) do
+    keyword
+    |> CoinGecko.search_coins()
+    |> PayloadGenerator.search_results(sender_id)
   end
 end

@@ -3,6 +3,6 @@ defmodule MyCrypto.CoinGecko.Http do
   HTTP behaviour for CoinGecko HTTP Client.
   """
 
-  @callback list_coins() :: list()
+  @callback search_coins(String.t()) :: list()
   @callback get_market_chart(String.t()) :: map()
 end

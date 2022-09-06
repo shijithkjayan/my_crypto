@@ -15,14 +15,14 @@ defmodule MyCrypto.CoinGecko.HttpClient do
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.PathParams
 
-  def list_coins() do
-    case get("/coins/list") do
-      {:ok, %Tesla.Env{body: body}} ->
-        body
+  def search_coins(keyword) do
+    case get("/search", query: [query: keyword]) do
+      {:ok, %Tesla.Env{body: %{"coins" => coins}, status: 200}} ->
+        coins
 
       {:error, error} ->
         Logger.error("Coingecko coins/list API failed", error: error)
-        []
+        :error
     end
   end
 

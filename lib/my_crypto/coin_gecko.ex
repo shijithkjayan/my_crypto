@@ -8,12 +8,19 @@ defmodule MyCrypto.CoinGecko do
   @http_client Application.compile_env(:my_crypto, [__MODULE__, :http_client], HttpClient)
 
   @doc """
-  Lists 5 random coins from the CoinGecko API response
-  and
+  Gets the top 5 coins in terms of market cap that matches the keyword.
   """
-  @spec list_coins :: list()
-  def list_coins() do
-    @http_client.list_coins() |> Enum.take_random(5)
+  @spec search_coins(String.t()) :: list()
+  def search_coins(keyword) do
+    keyword
+    |> @http_client.search_coins()
+    |> case do
+      :error ->
+        :error
+
+      coins ->
+        Enum.slice(coins, 0, 5)
+    end
   end
 
   def get_prices(coin_id) do
