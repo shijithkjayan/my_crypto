@@ -46,7 +46,8 @@ defmodule MyCrypto.MixProject do
       {:tesla, "~> 1.4"},
       {:mox, "~> 1.0", only: :test},
       {:excoveralls, "~> 0.14.6", only: :test},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:number, "~> 1.0"}
     ]
   end
 

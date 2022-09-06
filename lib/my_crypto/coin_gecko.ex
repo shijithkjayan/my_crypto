@@ -21,6 +21,7 @@ defmodule MyCrypto.CoinGecko do
       %{"prices" => prices} ->
         Enum.map(prices, fn [unix_time, price] ->
           date = unix_time |> DateTime.from_unix!(:millisecond) |> DateTime.to_date()
+          price = Number.Currency.number_to_currency(price)
           "#{date}: #{price} \n\n"
         end)
 
