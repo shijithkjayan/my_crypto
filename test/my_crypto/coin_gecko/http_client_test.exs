@@ -6,9 +6,111 @@ defmodule MyCrypto.CoinGecko.HttpClientTest do
 
   alias MyCrypto.CoinGecko.HttpClient
 
+  @search_result %{
+    "coins" => [
+      %{
+        "id" => "solana",
+        "name" => "Solana",
+        "api_symbol" => "solana",
+        "symbol" => "SOL",
+        "market_cap_rank" => 9
+      },
+      %{
+        "id" => "green-satoshi-token",
+        "name" => "STEPN Green Satoshi Token on Solana",
+        "api_symbol" => "green-satoshi-token",
+        "symbol" => "GST-SOL",
+        "market_cap_rank" => 697
+      }
+    ],
+    "exchanges" => [],
+    "icos" => [],
+    "categories" => [
+      %{
+        "id" => 1,
+        "name" => "Artificial Intelligence"
+      },
+      %{
+        "id" => 2,
+        "name" => "Augmented Reality"
+      }
+    ],
+    "nfts" => [
+      %{
+        "id" => "everai-heroes-duo",
+        "name" => "Everai Heroes: Duo",
+        "symbol" => "EVERAIDUO"
+      }
+    ]
+  }
+
   setup do
     base_url = System.get_env("COINGECKO_URL")
     {:ok, %{base_url: base_url}}
+  end
+
+  describe "search_coins/1" do
+    test "returns coins matching the keyword", %{base_url: base_url} do
+      keyword = "solana"
+
+      url = "#{base_url}/search"
+
+      mock(fn %{method: :get, url: ^url, query: [query: ^keyword]} ->
+        %Tesla.Env{status: 200, body: @search_result}
+      end)
+
+      assert @search_result["coins"] == HttpClient.search_coins(keyword)
+    end
+
+    test "returns empty list when there are no matching coins", %{base_url: base_url} do
+      keyword = "idontexist"
+
+      url = "#{base_url}/search"
+
+      mock(fn %{method: :get, url: ^url, query: [query: ^keyword]} ->
+        %Tesla.Env{
+          status: 200,
+          body: %{
+            "coins" => [],
+            "exchanges" => [],
+            "icos" => [],
+            "categories" => [
+              %{"id" => 1, "name" => "Artificial Intelligence"},
+              %{"id" => 2, "name" => "Augmented Reality"}
+            ],
+            "nfts" => []
+          }
+        }
+      end)
+
+      assert [] == HttpClient.search_coins(keyword)
+    end
+
+    test "returns :error when API fails", %{base_url: base_url} do
+      keyword = "solana"
+
+      url = "#{base_url}/search"
+
+      mock(fn %{method: :get, url: ^url, query: [query: ^keyword]} ->
+        {:error, :reason}
+      end)
+
+      assert :error == HttpClient.search_coins(keyword)
+    end
+
+    test "logs error message when API fails", %{base_url: base_url} do
+      keyword = "solana"
+
+      url = "#{base_url}/search"
+
+      mock(fn %{method: :get, url: ^url, query: [query: ^keyword]} ->
+        {:error, :reason}
+      end)
+
+      assert capture_log(fn ->
+               assert :error == HttpClient.search_coins(keyword)
+             end) =~ "Coingecko /search API failed"
+    end
   end
 
   describe "get_market_chart/1" do

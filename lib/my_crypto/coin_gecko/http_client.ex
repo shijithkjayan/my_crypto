@@ -21,7 +21,7 @@ defmodule MyCrypto.CoinGecko.HttpClient do
         coins
 
       {:error, error} ->
-        Logger.error("Coingecko coins/list API failed", error: error)
+        Logger.error("Coingecko /search API failed", error: error)
         :error
     end
   end
