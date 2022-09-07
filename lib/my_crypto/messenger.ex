@@ -31,7 +31,15 @@ defmodule MyCrypto.Messenger do
 
   @doc """
   Reads the message and sends reply accordingly.
+
+  ## Examples
+
+      iex> read_message(%{})
+      :ok
+
+
   """
+  @spec read_message(map()) :: :ok
   def read_message(payload) do
     message = Helpers.get_message!(payload)
     handle_message(message)

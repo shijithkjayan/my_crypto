@@ -70,7 +70,7 @@ defmodule MyCrypto.Messenger.PayloadGenerator do
 
   def prices_response(prices, recipient_id) do
     message = """
-    The price of requested coin over the last 14 days is:
+    The price of requested coin over the last 14 days are:
 
     #{prices}
     """
