@@ -9,6 +9,7 @@ defmodule MyCrypto.Messenger do
   alias MyCrypto.Messenger.PayloadGenerator
 
   @http_client Application.compile_env(:my_crypto, [__MODULE__, :http_client], HttpClient)
+  @ets_table :sender_state
 
   @doc """
   Validate the recieved token is same as what we have in the
@@ -38,6 +39,7 @@ defmodule MyCrypto.Messenger do
 
   defp handle_message(%{"message" => %{"text" => text}} = message) when text in ["Hi", "Hello"] do
     sender_id = Helpers.get_sender_id(message)
+    Task.start(fn -> set_state(sender_id, "initial") end)
 
     sender_id
     |> @http_client.get_user_name()
@@ -49,6 +51,7 @@ defmodule MyCrypto.Messenger do
          %{"message" => %{"quick_reply" => %{"payload" => "price_of_" <> coin_id}}} = message
        ) do
     sender_id = Helpers.get_sender_id(message)
+    Task.start(fn -> delete_state(sender_id) end)
 
     coin_id
     |> CoinGecko.get_prices()
@@ -58,6 +61,7 @@ defmodule MyCrypto.Messenger do
 
   defp handle_message(%{"postback" => %{"payload" => "search_by_" <> type}} = message) do
     sender_id = Helpers.get_sender_id(message)
+    Task.start(fn -> set_state(sender_id, "search_by") end)
 
     type
     |> PayloadGenerator.search_by_response(sender_id)
@@ -65,14 +69,22 @@ defmodule MyCrypto.Messenger do
   end
 
   defp handle_message(%{"message" => %{"text" => text}} = message) do
-    message
-    |> Helpers.get_sender_id()
-    |> get_coins_payload(text)
-    |> @http_client.send_reply()
+    sender_id = Helpers.get_sender_id(message)
+
+    case check_state_alive?(sender_id) do
+      true ->
+        sender_id
+        |> get_coins_payload(text)
+        |> @http_client.send_reply()
+
+      false ->
+        handle_message(%{"sender" => %{"id" => sender_id}})
+    end
   end
 
   defp handle_message(message) do
     sender_id = Helpers.get_sender_id(message)
+    Task.start(fn -> delete_state(sender_id) end)
 
     sender_id
     |> @http_client.get_user_name()
@@ -85,4 +97,24 @@ defmodule MyCrypto.Messenger do
     |> CoinGecko.search_coins()
     |> PayloadGenerator.search_results(sender_id)
   end
+
+  @ttl 6_0000
+  defp set_state(sender_id, state) do
+    expiry = "Etc/UTC" |> DateTime.now!() |> DateTime.add(@ttl, :millisecond)
+    :ets.insert(@ets_table, {sender_id, state, expiry})
+    :ets.lookup(@ets_table, sender_id) |> IO.inspect()
+  end
+
+  defp check_state_alive?(sender_id) do
+    case :ets.lookup(@ets_table, sender_id) do
+      [{^sender_id, state, expiry}] ->
+        comparison = "Etc/UTC" |> DateTime.now!() |> DateTime.compare(expiry)
+        if state == "search_by" && comparison == :lt, do: true, else: false
+
+      _ ->
+        false
+    end
+  end
+
+  defp delete_state(sender_id), do: :ets.delete(@ets_table, sender_id)
 end

@@ -67,7 +67,7 @@ defmodule MyCrypto.CoinGeckoTest do
       keyword = "idontexist"
 
       expect(HttpClientMock, :search_coins, fn ^keyword ->
-          []
+        []
       end)
 
       assert [] = CoinGecko.search_coins(keyword)
@@ -77,7 +77,7 @@ defmodule MyCrypto.CoinGeckoTest do
       keyword = "solana"
 
       expect(HttpClientMock, :search_coins, fn ^keyword ->
-          :error
+        :error
       end)
 
       assert :error = CoinGecko.search_coins(keyword)

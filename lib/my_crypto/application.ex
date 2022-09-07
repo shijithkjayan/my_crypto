@@ -7,6 +7,9 @@ defmodule MyCrypto.Application do
 
   @impl true
   def start(_type, _args) do
+    # Create an ETS table
+    :ets.new(:sender_state, [:set, :public, :named_table])
+
     children = [
       # Start the Telemetry supervisor
       MyCryptoWeb.Telemetry,
