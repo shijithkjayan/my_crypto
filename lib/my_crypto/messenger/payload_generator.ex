@@ -38,7 +38,7 @@ defmodule MyCrypto.Messenger.PayloadGenerator do
 
   def search_results([], recipient_id) do
     message_body = %{
-      text: "No coins found.! Please try another keyword"
+      text: "No coins found! Please try another keyword"
     }
 
     message_response(message_body, recipient_id)
@@ -89,8 +89,8 @@ defmodule MyCrypto.Messenger.PayloadGenerator do
   def unknown_message_response(user_name, recipient_id) do
     message = """
     I am sorry #{user_name}, I did not understand your request. \n
-    You may please start the conversation by sending `Hi` or `Hello` or \n
-    please wait for one of our executes to respond back to you.! Thank you
+    You may please start the conversation by sending `Hi` or `Hello`. \n
+    Thank you
     """
 
     message_response(%{text: message}, recipient_id)

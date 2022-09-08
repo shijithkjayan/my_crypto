@@ -109,7 +109,7 @@ defmodule MyCrypto.CoinGecko.HttpClientTest do
 
       assert capture_log(fn ->
                assert :error == HttpClient.search_coins(keyword)
-             end) =~ "Coingecko /search API failed"
+             end) =~ "Coingecko Search API failed"
     end
   end
 
@@ -158,7 +158,7 @@ defmodule MyCrypto.CoinGecko.HttpClientTest do
 
       assert capture_log(fn ->
                assert :error = HttpClient.get_market_chart(coin_id)
-             end) =~ "Coingecko coins/:id/markert_chart API returned error"
+             end) =~ "Coingecko Market Chart API returned error"
     end
 
     test "returns the :error when the API fails", %{base_url: base_url} do
@@ -171,7 +171,7 @@ defmodule MyCrypto.CoinGecko.HttpClientTest do
 
       assert capture_log(fn ->
                assert :error = HttpClient.get_market_chart(coin_id)
-             end) =~ "Coingecko coins/:id/markert_chart API failed"
+             end) =~ "Coingecko Market Chart API failed"
     end
   end
 end

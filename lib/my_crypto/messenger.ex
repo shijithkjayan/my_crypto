@@ -115,6 +115,7 @@ defmodule MyCrypto.Messenger do
         if state == "search_by" && comparison == :lt, do: true, else: false
 
       _ ->
+        delete_state(sender_id)
         false
     end
   end

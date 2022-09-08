@@ -93,7 +93,7 @@ defmodule MyCrypto.OutgoingMessageStructure do
     %{
       recipient: %{id: recipient_id},
       messaging_type: "RESPONSE",
-      message: %{text: "No coins found.! Please try another keyword"}
+      message: %{text: "No coins found! Please try another keyword"}
     }
   end
 
@@ -128,8 +128,8 @@ defmodule MyCrypto.OutgoingMessageStructure do
       message: %{
         text: """
         I am sorry #{user_name}, I did not understand your request. \n
-        You may please start the conversation by sending `Hi` or `Hello` or \n
-        please wait for one of our executes to respond back to you.! Thank you
+        You may please start the conversation by sending `Hi` or `Hello`. \n
+        Thank you
         """
       }
     }
