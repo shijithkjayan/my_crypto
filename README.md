@@ -7,11 +7,14 @@
 
 ## Improvements
 - We can cache the prices of a coin when its called for the first time in a day and keep its `ttl` as EOD and there by limit the number of API calls to CoinGecko.
-- For now, I have used ETS to keep the state of a user. This was needed because I couldnt find a way to match the case when a user is sending a coin search request, so whenever a user enters any message other than `Hi` or `Hello` the bot will consider that as a search request and try to get the coins that match the message.
+
+- A I tried out to force the flow was to ask the user to do their coin search as thread/reply to the previous message the bot sends them. So when the user replies, the bot will get the previous message's ID which the bot can use to call the Message Graph API and get the message content and ensure that its what we expect. But to do that the bot/page needs more permission which needs App review and is going to take time, so I had to drop it.
+
+- For now, I have used ETS to force a the flow. This was needed because I couldnt find a way to match the case when a user is sending a coin search request, so whenever a user enters any message other than `Hi` or `Hello` the bot will consider that as a search request and try to get the coins that match the message.
 In order to avoid that, by using ETS I have set states for the user/sender and also gave it a ttl of 1 minute. So a message will be considered as a coin search only when the state of the user is `search_by` (which is the step that user is supposed to pass through right before they try to make a coin search request.) and the ttl is not expired. We assume that the interaction is active for only 1 minute, past that the bot considers the chat as ended and the user should start over.
 So basically this ETS caching is only to force a flow to the coversation.
 
-- Another solution I tried out to force the flow was to ask the user to do their coin search as thread/reply to the previous message the user sends them. So when the user replies, the bot will get the previous message's ID which the bot can use to call the Message Graph API and get the message content and ensure that its contents are what we expect. But to do that the bot/page needs more permission which needs App review and is going to take time, so I had to drop it.
+- The ETS table for now is kept as public. It can be made private and all its action can be handled within a Genserver. But for now, to make things simple and easy I have made it public.
 
 ## Working Examples
 ![RPReplay_Final1662568656](https://user-images.githubusercontent.com/41006127/188940644-cc274a4a-8a5c-46f6-bcc9-924c026e8e7f.mov)
